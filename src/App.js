@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import Menu from "./Menu";
 import Categories from "./Categories";
@@ -15,6 +16,7 @@ const App = () => {
   const [activeCategory, setActiveCategory] = useState("");
   const [categories, setCategories] = useState(allCategories);
   const [pageId, setPageId] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const filterItems = (category) => {
     setActiveCategory(category);
@@ -25,34 +27,54 @@ const App = () => {
     const newItems = items.filter((item) => item.category === category);
     setMenuItems(newItems);
   };
+
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  useEffect(() => {
+    const filteredItems = items.filter((item) =>
+      item.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setMenuItems(filteredItems);
+  }, [searchTerm]);
+
   return (
     <main>
-      <MenuX changePageId={setPageId}/>
-      {(pageId === 0) ? 
-      (<section className="menu section">
-        <div className="title">
-          <img src={logo} alt="logo" className="logo" />
-          <h2>Menu List</h2>
-          <div className="underline"></div>
-        </div>
-        <Categories
-          categories={categories}
-          activeCategory={activeCategory}
-          filterItems={filterItems}
-        />
-        <Menu items={menuItems} />
-      </section>) :
-       (pageId === 1) ?
-      (<section className="login section">
-        <LoginPage />
-      </section>) :
-      (pageId === 2) ?
-      (<section className="Register section">
-      <RegisterPage />
-      </section>):
-      (<section className="Cart section">
-      <Cart />
-      </section>)}
+      <MenuX changePageId={setPageId} />
+      {pageId === 0 ? (
+        <section className="menu section">
+          <div className="title">
+            <img src={logo} alt="logo" className="logo" />
+            <h2>Menu List</h2>
+            <div className="underline"></div>
+          </div>
+          <input
+            type="text"
+            placeholder="Search items"
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+          <Categories
+            categories={categories}
+            activeCategory={activeCategory}
+            filterItems={filterItems}
+          />
+          <Menu items={menuItems} />
+        </section>
+      ) : pageId === 1 ? (
+        <section className="login section">
+          <LoginPage />
+        </section>
+      ) : pageId === 2 ? (
+        <section className="Register section">
+          <RegisterPage />
+        </section>
+      ) : (
+        <section className="Cart section">
+          <Cart />
+        </section>
+      )}
     </main>
   );
 };

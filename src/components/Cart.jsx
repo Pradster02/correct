@@ -1,95 +1,36 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  addToCart,
-  clearCart,
-  decreaseCart,
-  getTotals,
-  removeFromCart,
-} from "../slices/cartSlice";
+import React, { useState } from "react";
+import "./Cart.css";
+import Menu from "../Menu.js";
 
+const Cart = ({ items }) => {
+  const [cartItems, setCartItems] = useState([]);
 
-const Cart = () => {
-  const cart = useSelector((state) => state.cart);
-  const dispatch = useDispatch();
+  const addToCart = (item) => {
+    setCartItems([...cartItems, item]);
+  };
 
-  useEffect(() => {
-    dispatch(getTotals());
-  }, [cart, dispatch]);
-
-  const handleAddToCart = (product) => {
-    dispatch(addToCart(product));
-  };
-  const handleDecreaseCart = (product) => {
-    dispatch(decreaseCart(product));
-  };
-  const handleRemoveFromCart = (product) => {
-    dispatch(removeFromCart(product));
-  };
-  const handleClearCart = () => {
-    dispatch(clearCart());
-  };
   return (
     <div className="cart-container">
-      <h2>Shopping Cart</h2>
-      {cart.cartItems.length === 0 ? (
-        <div className="cart-empty">
-          <p>Your cart is currently empty</p>
-        </div>
-      ) : (
-        <div>
-          <div className="titles">
-            <h3 className="product-title">Product</h3>
-            <h3 className="price">Price</h3>
-            <h3 className="quantity">Quantity</h3>
-            <h3 className="total">Total</h3>
-          </div>
-          <div className="cart-items">
-            {cart.cartItems &&
-              cart.cartItems.map((cartItem) => (
-                <div className="cart-item" key={cartItem.id}>
-                  <div className="cart-product">
-                    <img src={cartItem.image} alt={cartItem.name} />
-                    <div>
-                      <h3>{cartItem.name}</h3>
-                      <p>{cartItem.desc}</p>
-                      <button onClick={() => handleRemoveFromCart(cartItem)}>
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                  <div className="cart-product-price">${cartItem.price}</div>
-                  <div className="cart-product-quantity">
-                    <button onClick={() => handleDecreaseCart(cartItem)}>
-                      -
-                    </button>
-                    <div className="count">{cartItem.cartQuantity}</div>
-                    <button onClick={() => handleAddToCart(cartItem)}>+</button>
-                  </div>
-                  <div className="cart-product-total-price">
-                    ${cartItem.price * cartItem.cartQuantity}
-                  </div>
-                </div>
-              ))}
-          </div>
-          <div className="cart-summary">
-            <button className="clear-btn" onClick={() => handleClearCart()}>
-              Clear Cart
-            </button>
-            <div className="cart-checkout">
-              <div className="subtotal">
-                <span>Subtotal</span>
-                <span className="amount">${cart.cartTotalAmount}</span>
-              </div>
-              <p>Taxes and shipping calculated at checkout</p>
-              <button>Check out</button>
-              
+      <h2>Cart</h2>
+      <ul className="cart-items">
+        {cartItems.map((item) => (
+          <li key={item.id} className="cart-item">
+            <img src={item.img} alt={item.title} className="cart-item-img" />
+            <div className="cart-item-info">
+              <h3>{item.title}</h3>
+              <p>${item.price}</p>
             </div>
-          </div>
-        </div>
-      )}
+          </li>
+        ))}
+      </ul>
+      <Menu items={items} addToCart={addToCart} />
     </div>
   );
 };
 
-export default Cart;
+export default Cart; 
+
+
+
+
+
